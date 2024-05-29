@@ -87,7 +87,20 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "c1231792489840d083a3f8ca196ac67a"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+
+    class CalculateError extends Error {
+      constructor(msg) {
+        super(msg);
+        this.name = 'CalculateError';
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +108,94 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      try{
+        if(firstNum == '' || secondNum == '') {
+          throw new CalculateError('At least one of the values is empty. Please type two numbers.');
+        }
+        if(operator == '/' && secondNum == 0) {
+          throw new CalculateError('Division by zero. Please type numbers other than zero for the second number when operating division.');
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch(error) {
+        output.innerHTML = `Error: ${error.message}`;
+      } finally {
+        console.log('Finished Calculation.');
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    errorBtns[0].addEventListener('click', () => {
+      console.log('Console Log Demo');
+    });
+
+    errorBtns[1].addEventListener('click', () => {
+      console.error('Console Error Demo');
+    });
+
+    errorBtns[2].addEventListener('click', () => {
+      console.count('Count Button: ');
+    });
+
+    errorBtns[3].addEventListener('click', () => {
+      console.warn('Count Warn Button');
+    });
+
+    errorBtns[4].addEventListener('click', () => {
+      console.assert(2 == 3, '{number: 2, errorMsg: \"The number does not equal 3\"}');
+    });
+
+    errorBtns[5].addEventListener('click', () => {
+      console.clear();
+    });
+
+    errorBtns[6].addEventListener('click', () => {
+      console.dir(errorBtns[6]);
+    });
+
+    errorBtns[7].addEventListener('click', () => {
+      console.dirxml(errorBtns[7]);
+    });
+
+    errorBtns[8].addEventListener('click', () => {
+      console.group('Console Group Start');
+    });
+
+    errorBtns[9].addEventListener('click', () => {
+      console.groupEnd();
+    });
+
+    errorBtns[10].addEventListener('click', () => {
+      console.table([{ name: 'Software Engineering', num: 110}, { name: 'Programming Language', num: 130}, { name: 'Advanced Software Engineering', num: 112}]);
+    });
+
+    errorBtns[11].addEventListener('click', () => {
+      console.time('Timer Button');
+    });
+
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd('Timer Button');
+    });
+
+    errorBtns[13].addEventListener('click', function handleBtnClick() {
+      function deep() {
+        function deeper() {
+          function deepest() {
+            console.trace();
+          }
+          deepest();
+        }
+        deeper();
+      }
+      deep();
+    });
+
+    errorBtns[14].addEventListener('click', function handleBtnClick() {     
+      boom();
+    });
   </script>
 </body>
 
